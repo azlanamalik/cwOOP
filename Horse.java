@@ -8,11 +8,15 @@
 public class Horse
 {
     //Fields of class Horse
-  String horseName;
-  char horseSymbol;
-  int distance_travelled;
-  boolean fallen;
-  double horseConfidence;
+    String horseName;
+    char horseSymbol;
+    int distance_travelled;
+    boolean fallen;
+    double horseConfidence;
+    String breed;
+    String coat_colour;
+
+
     //Constructor of class Horse
     /**
      * Constructor for objects of class Horse
@@ -30,6 +34,22 @@ public class Horse
     public void fall()
     {
       this.fallen = true;
+    }
+    public void setbreed(String breed)
+    {
+      this.breed = breed;
+    }
+    public void setcoatcolour(String coatcolour)
+    {
+      this.coat_colour = coatcolour;
+    }
+    public String getbreed()
+    {
+      return this.breed;
+    }
+    public String getcoatcolour()
+    {
+      return this.coat_colour;
     }
 
     public double getConfidence()

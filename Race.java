@@ -1,6 +1,6 @@
 import java.util.concurrent.TimeUnit;
 import java.lang.Math;
-
+import java.util.Scanner;
 /**
  * A three-horse race, each horse running in its own lane
  * for a given distance
@@ -14,6 +14,7 @@ public class Race
     private Horse lane1Horse;
     private Horse lane2Horse;
     private Horse lane3Horse;
+    private int tracks;
 
     /**
      * Constructor for objects of class Race
@@ -28,9 +29,6 @@ public class Race
         lane1Horse = null;
         lane2Horse = null;
         lane3Horse = null;
-        // lane1Horse = new Horse('x',"naa",0.6);
-        // lane2Horse = new Horse('x',"n2a",0.7);
-        // lane3Horse = new Horse('x',"n3a",0.9);
     }
 
     /**
@@ -69,12 +67,89 @@ public class Race
     {
         //declare a local variable to tell us when the race is finished
         boolean finished = false;
+        System.out.println("enter track lengths");
+        Scanner sc = new Scanner(System.in);
+        String trackLength_string = sc.nextLine();
+        int trackLengthInt = Integer.parseInt(trackLength_string);
+        while(trackLengthInt>150||trackLengthInt<5){
+            System.out.println("length wont fit in screen");
+            trackLength_string = sc.nextLine();
+            trackLengthInt = Integer.parseInt(trackLength_string);
+        }
+        this.raceLength = trackLengthInt;
 
+        char Symbol_h1;
+        String name_h1 = "null";
+        char Symbol_h2;
+        String name_h2 = "null";
+        char Symbol_h3;
+        String name_h3 = "null";
+        System.out.println("Unicode for symbols? (y/n):");
+        String unicode_inp = sc.nextLine();
+        while (!unicode_inp.equals("y") && !unicode_inp.equals("n")) {
+            System.out.println("Please enter 'y' or 'n':");
+            unicode_inp = sc.nextLine();
+        }
+        if(unicode_inp.equals("y")){
+          System.out.println("Enter symbol for your first horse: in unicode");
+          try{String char_inp_1 = sc.nextLine();
+             Symbol_h1 = (char) Integer.parseInt(char_inp_1, 16);}
+          catch(Exception e){
+            System.out.println("invalid unicode value please just enter a charecter");
+            Symbol_h1 = sc.nextLine().charAt(0);
+          }
+
+          System.out.println("Enter name for your first horse:");
+          name_h1 = sc.nextLine();
+          System.out.println("Enter symbol for your second horse: in unicode");
+          try{String char_inp_2 = sc.nextLine();
+             Symbol_h2 = (char) Integer.parseInt(char_inp_2 , 16);}
+          catch(Exception e){
+            System.out.println("invalid unicode value please just enter a charecter");
+            Symbol_h2 = sc.nextLine().charAt(0);
+          }
+          System.out.println("Enter name for your second horse:");
+          name_h2 = sc.nextLine();
+          System.out.println("Enter symbol for your third horse: in unicode");
+          try{String char_inp_3 = sc.nextLine();
+             Symbol_h3 = (char) Integer.parseInt(char_inp_3 , 16);}
+          catch(Exception e){
+            System.out.println("invalid unicode value please just enter a charecter");
+            Symbol_h3 = sc.nextLine().charAt(0);
+          }
+          System.out.println("Enter name for your third horse:");
+          name_h3 = sc.nextLine();
+          Horse horse1 = new Horse(Symbol_h1, name_h1, 0.8);
+          Horse horse2 = new Horse(Symbol_h2, name_h2, 0.7);
+          Horse horse3 = new Horse(Symbol_h3, name_h3, 0.7);
+          addHorse(horse1, 1);
+          addHorse(horse2, 2);
+          addHorse(horse3, 3);
+        }
+        else{
+          System.out.println("Enter symbol for your first horse: in unicode");
+          Symbol_h1 = sc.nextLine().charAt(0);
+          System.out.println("Enter name for your first horse:");
+          name_h1 = sc.nextLine();
+          System.out.println("Enter symbol for your second horse:");
+          Symbol_h2 = sc.nextLine().charAt(0);
+          System.out.println("Enter name for your second horse:");
+          name_h2 = sc.nextLine();
+          System.out.println("Enter symbol for your third horse:");
+          Symbol_h3 = sc.nextLine().charAt(0);
+          System.out.println("Enter name for your third horse:");
+          name_h3 = sc.nextLine();
+          Horse horse1 = new Horse(Symbol_h1, name_h1, 0.8);
+          Horse horse2 = new Horse(Symbol_h2, name_h2, 0.7);
+          Horse horse3 = new Horse(Symbol_h3, name_h3, 0.7);
+          addHorse(horse1, 1);
+          addHorse(horse2, 2);
+          addHorse(horse3, 3);
+        }
         //reset all the lanes (all horses not fallen and back to 0). 
         lane1Horse.goBackToStart();
         lane2Horse.goBackToStart();
         lane3Horse.goBackToStart();
-
         while (!finished)
         {
             //move each horse
@@ -97,7 +172,9 @@ public class Race
             //wait for 100 milliseconds
             try{ 
                 TimeUnit.MILLISECONDS.sleep(100);
-            }catch(Exception e){}
+            }catch(Exception e){
+                System.out.println("exception");
+            }
         }
         if (raceWonBy(lane1Horse)){
             System.out.println(lane1Horse.getName());
@@ -107,8 +184,7 @@ public class Race
         }
         else if(raceWonBy(lane3Horse)){
             System.out.println(lane3Horse.getName());
-        }
-    }
+        }}
 
     /**
      * Randomly make a horse move forward or fall depending
@@ -130,10 +206,10 @@ public class Race
                theHorse.moveForward();
             }
 
-            //the probability that the horse will fall is very small (max is 0.1)
+            //the probability that the horse will fall is very small (max is 0.01)
             //but will also will depends exponentially on confidence 
             //so if you double the confidence, the probability that it will fall is *2
-            if (Math.random() < (0.1*theHorse.getConfidence()*theHorse.getConfidence()))
+            if (Math.random() < (0.01*theHorse.getConfidence()*theHorse.getConfidence()))
             {
                 theHorse.fall();
             }
@@ -169,13 +245,13 @@ public class Race
         System.out.println();
 
         printLane(lane1Horse);
-        System.out.println();
+        System.out.println(lane1Horse.getName() + "(Current confidence " + lane1Horse.getConfidence() + ")");
 
         printLane(lane2Horse);
-        System.out.println();
+        System.out.println(lane2Horse.getName() + "(Current confidence " + lane2Horse.getConfidence() + ")");
 
         printLane(lane3Horse);
-        System.out.println();
+        System.out.println(lane3Horse.getName() + "(Current confidence " + lane3Horse.getConfidence() + ")");
 
         multiplePrint('=',raceLength+3); //bottom edge of track
         System.out.println();    
@@ -234,4 +310,5 @@ public class Race
             i = i + 1;
         }
     }
+
 }
